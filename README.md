@@ -87,7 +87,27 @@ Here in switch will contain the name of the model which you want to specify.
 
 `-o` switch is the path to dump the results. After running the script, results for every class and for every IoU will get dumped in `map_log.json`(Default). 
 
-`Demo Command:  $ python3 mAP.py -g "$path/to/gt/files" -d "$path/to/detection/files" -i 0.5 -n coco.names -p 0 `
+`Demo Command:  $ python3 mAP.py -g "$path/to/gt/files" -d "$path/to/detection/files" -i 0.5 -n coco.names -p 0 -c 0.5`
+
+You can expect the output something like given below on VOC standards
+
+```
++---------------+-------+-------+------+-------+-----------+--------+-------+--------+
+| Class/IoU@0.5 |   AP  |   TP  |  FP  |   FN  | Precision | Recall |  GTs  |  Dets  |
++---------------+-------+-------+------+-------+-----------+--------+-------+--------+
+|     Person    | 0.609 |  4271 | 338  |  5307 |   0.927   | 0.446  |  9578 | 409501 |
+|    Bicycle    | 0.330 |  466  | 430  |  1437 |   0.520   | 0.245  |  1903 | 66510  |
+|      Car      | 0.639 | 12138 | 842  | 24718 |   0.935   | 0.329  | 36856 | 408778 |
+|   Motorcycle  | 0.221 |   35  | 292  |   53  |   0.107   | 0.398  |   88  | 23424  |
+|      Bus      | 0.127 |  100  | 1002 |  119  |   0.091   | 0.457  |  219  | 21520  |
+|     Truck     | 0.198 |  725  | 1875 |  5277 |   0.279   | 0.121  |  6002 | 60693  |
+|    Backpack   | 0.183 |  136  | 136  |  845  |   0.500   | 0.139  |  981  | 15229  |
+|    Handbag    | 0.210 |  125  | 140  |  1081 |   0.472   | 0.104  |  1206 | 26157  |
+|    Suitcase   | 0.133 |   58  | 318  |  147  |   0.154   | 0.283  |  205  | 95856  |
++---------------+-------+-------+------+-------+-----------+--------+-------+--------+
+mAP : 29.435 
+```
+
 ___
 
 ### References ###
