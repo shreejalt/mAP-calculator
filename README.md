@@ -1,48 +1,52 @@
-# mAP Calculation Steps #
+# mAP Calculator - PascalVOC2012 and COCO Standards #
 
-This folder contains the script to calculate the mAP on COCO/Pascal VOC 2012 Standards. There are two modes of calculation supported as of now. i) Continues Point AP ii) 11-Point AP. Continuous point AP is preferred as it is more standardized and accurate. 
+This folder contains the script to calculate the mAP on COCO/Pascal VOC 2012 Standards. There are three modes of calculation supported as of now. i) Continues Point AP ii) 11-Point AP. iii) 101-Point AP. Continuous point AP is preferred as it is more standardized and accurate. 
+
 Usage of the same script is mentioned below
 
 ___
 
 ### Pre-requisites before running the evaluation script ###
 
-- Folder containing Ground Truths files(Text FIles). 
-```
-Each file will be containing annotations following the format: [Class ID TLX  TLy  BRx BRy].
-For example, there can be a file name frame_001.txt containing the following lines.
+- #### Installing the requirements
+`python = 3.X` 
 
+`pip3 install -r requirements.txt`
+
+- #### Folder containing Ground Truths files(Text Files). 
+
+Each file will be containing annotations following the format: **[Class_ID TLX  TLy  BRx BRy**].
+For example, there can be a file name `frame_001.txt` containing the following lines.
+
+```
 frame_001.txt
 0 100. 200. 221.2 250.3
 0 120.3 150.6 200.1 200.9
 ```
 
-`Normalized coordinates are also supported now. Refer th script usage section`
+- #### Folder containing Detection files(Text Files).
 
-- Folder containing Detection files(Text Files).
+`NOTE: WHENEVER YOU GENERATE DETECTION FILES, DUMP THE RESULTS AT A VERY LOW CONFIDENCE THRESHOLD AROUND 0.001. THIS WILL ONLY GIVE YOU THE RIGHT mAP NUMBERS`
 
-`NOTE: WHENEVER YOU GENERATE DETECTION FILES, DUMP THE RESULTS AT A VERY LOW CONFIDENCE THRESHOLD AROUND 0.005. THIS WILL ONLY GIVE YOU THE RIGHT mAP NUMBERS`
-
-```
-Each file will be containing detection results following the format: [Class ID Conf TLx TLy BRx BRy].
+Each file will be containing detection results following the format:  **[Class_ID Conf TLx TLy BRx BRy] **
 For example, there can be a filename frame_001.txt containing the following lines.
-
+```
 frame_001.txt
 0 0.95 98 198.3 210.3 239.6
 ```
 
-- File `model.names` that contains the names of the classes - index wise. 
-```
-For example if the detector model is inferred on two classes say person and head, then model.names file will follow below given format.
+- #### File `model.names` that contains the names of the classes - index wise. 
 
+For example if the detector model is inferred on two classes say person and car, then **model.names** file will follow below given format.
+```
 model.names
 person
-head
+car
+```
 
 NOTE: 
 Please specify according to the class index that is being used in the detection files. 
 Here, class person corresponds to index 0 as it is in the first line of model.names file and so on.
-```
 
 ___
 
@@ -51,50 +55,46 @@ ___
 You can run the script by passing command line arguments with the following given switches. 
 After running the command, log file `evaluationLog.txt` will be generated containing the AP results.
 
-`$python evaluationScript.py [-h] [-d DET] [-g GT] [-i IOU] [-p POINTS]
-                           [-n NAMES] [-c CONFIDENCE] [-in INSTANCE]`
+`$python mAP.py [-h] [-d DET] [-g GT] [-i IOU] [-p POINTS]
+                           [-n NAMES] [-c CONFIDENCE]`
 
 ```
 Arguments:
 
-  -h, --help            show this help message and exit
   -d DET, --det DET     Full path to detection results folder
   -g GT, --gt GT        Full path to ground truth folder
   -i IOU, --iou IOU     Calculate AP at a particular IoU
   -p POINTS, --points POINTS
-                        Interpolation value: 0: Continues / 11: PascalVOC2012
-                        Challenge
+                        Interpolation value: 0: Continues / 11: PascalVOC2012 Challenge
   -n NAMES, --names NAMES
-                        Full path of file containing names of classes index
-                        wise
+                        Full path of file containing names of classes index wise
+  -o OUTPUT, --output OUTPUT
+                        File to dump the output
   -c CONFIDENCE, --confidence CONFIDENCE
                         Confidence at which Precision/Recall is calculated
-  -in INSTANCE, --instance INSTANCE
-                        Name of the instance/model(Seprated by underscore)
-  -ig IGNORE, --ignore IGNORE
-                        Flag to ignore the difficult anotations 0/1: No/Yes
-  -un UNNORMALIZE, --unnormalize UNNORMALIZE
-                        Flag of Unnormalization 0/1: No/Yes
-  -wi WIDTH, --width WIDTH
-                        Width of the image for unnormalization
-  -he HEIGHT, --height HEIGHT
-                        Height of the image for unnormalization
+  -ig, --ignore         Flag to ignore the difficult anotations
+  --coco                COCO Standard of calculation
 
 ```
 
 Here in switch will contain the name of the model which you want to specify.
 
-`-c` switch is used to calculate Precision and Recall at a mentioned threshold. Default is 0.5
+`-c` switch is used to calculate Precision and Recall at a mentioned confidence. Default is 0.5
 
-`-n` switch is the name of the model.names file. Default is model.names. You can keep this file in the same folder as `evaluationScript.py`
-
-`-un` switch helps to unnormalize the coordinates in YOLO format to un-normalized one. Provide width and height of the data when the flag is ON
+`-n` switch is the path to the model.names file. Default is model.names.
 
 `-ig` switch helps to remove the difficult annotations if ON. Remember, the format of the file should be `classID, Diff(0/1), Tx, TLy, BRx, BRy`
-`Demo Command:  $ python evaluationScript.py -g "$path/to/gt/files" -d "$path/to/detection/files" `
 
+`-o` switch is the path to dump the results. After running the script, results for every class and for every IoU will get dumped in `map_log.json`(Default). 
+
+`Demo Command:  $ python3 mAP.py -g "$path/to/gt/files" -d "$path/to/detection/files" -i 0.5 -n coco.names -p 0 `
 ___
 
-`UPDATE: COCO mAP IOU CALCULATION 0.5:0.95 IS IN TESTING. PascalVOC2012 IS READY TO USE`
+### References ###
 
+I have referred to the official matlab code of [mAP calculation](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/#devkit) and excellent written explanation and code by [@rafaelpadilla](https://github.com/rafaelpadilla/Object-Detection-Metrics) to understand the mAP calculation and extend it to the COCO standards. 
 ___
+
+`TODO`: COCO small/medium/large AP calculation is in progress. Will be updated soon.
+___
+
