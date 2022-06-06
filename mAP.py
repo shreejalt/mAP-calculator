@@ -131,18 +131,21 @@ class MAP:
         mAPList = np.array([np.mean(np.array(APList[i])) for i in range(self.numClasses)])
 
         # Print the statistics of the AP@0.5
-        table = PrettyTable(['Class/IoU@0.5', 'AP', 'TP', 'FP', 'FN', 'Precision', 'Recall'])
+        table = PrettyTable(['Class/IoU@0.5', 'AP', 'TP', 'FP', 'FN', 'Precision', 'Recall', 'GTs', 'Dets'])
         for cls in classmAPDict.keys():
 
             table.add_row(
                 [
                     cls,
                     '%.3f' % classmAPDict[cls][0.5]['AP'],
-                    '%.3f' % classmAPDict[cls][0.5]['TP'],
-                    '%.3f' % classmAPDict[cls][0.5]['FP'],
-                    '%.3f' % classmAPDict[cls][0.5]['FN'],
+                    '%d' % classmAPDict[cls][0.5]['TP'],
+                    '%d' % classmAPDict[cls][0.5]['FP'],
+                    '%d' % classmAPDict[cls][0.5]['FN'],
                     '%.3f' % classmAPDict[cls][0.5]['Precision'],
-                    '%.3f' % classmAPDict[cls][0.5]['Recall']
+                    '%.3f' % classmAPDict[cls][0.5]['Recall'],
+                    '%.3f' % classmAPDict[cls][0.5]['totalGTs'],
+                    '%.3f' % classmAPDict[cls][0.5]['totalDets']
+
                 ]
             )
         print(table)
